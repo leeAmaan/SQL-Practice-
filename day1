@@ -1,0 +1,27 @@
+/*  1. 이탈, 잔존(customer table active에서 0은 이탈 1은 잔존) 고객의 payment 최소 평균 최대 total을 구한다. */
+SELECT active, 
+		count(*) AS num_active,
+		min(amount) AS min_amt,
+		avg(amount) AS avg_amt,
+		max(amount) AS max_amt,
+		sum(amount) AS sum_amt 
+FROM payment AS p
+INNER JOIN customer AS c ON p.customer_id = c.customer_id GROUP BY c.active; 
+
+/* 2. 장르(category)별 평균 대여 평점 */
+SELECT c.name,
+	avg(rental_rate) AS avg_rental_rate 
+FROM category AS c 
+INNER JOIN film_category AS fc ON c.category_id = fc.category_id 
+INNER JOIN film AS f ON fc.film_id = f.film_id 
+GROUP BY c.category_id
+ORDER BY avg_rental_rate DESC;
+
+
+/* 3. 평점순 내림차순 DVD */
+SELECT f.title AS movie_title,
+		count(f.title) AS num_rentals
+FROM film f 
+INNER JOIN inventory AS i ON f.film_id = i.film_id 
+INNER JOIN rental AS r ON i.inventory_id  = r.inventory_id 
+GROUP BY f.title ORDER BY num_rentals DESC;
